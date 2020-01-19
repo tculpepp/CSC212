@@ -8,9 +8,9 @@ public class CalculatePropertyTax
 {
 	public static void main(String[] args)
 	{
-		double houseValue = 750_000; //house value in US Dollars
-		double taxRate = 0.02; //current tax rate as a decimal
-		double propertyTax = houseValue * taxRate;
+		float houseValue = 750_000; //house value in US Dollars
+		float taxRate = (float)0.02; //current tax rate as a decimal
+		float propertyTax = houseValue * taxRate;
 		
 		//The "%,.2f" formats the number string with commas and two decimal places for readability
 		System.out.print("Assessed current home value: $"+(String.format("%,.2f", houseValue))+"\n"

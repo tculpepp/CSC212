@@ -24,7 +24,7 @@ public class CalcPropertyTaxInput
 		System.out.print("Enter the current property tax rate (%): "); 
 		float taxRate = (validateUserInput('n')/100); //validate the input then convert the percentage to a decimal
 		float propertyTax = houseValue * taxRate; //a little math to get the info we need
-		System.out.println("Property tax due this year: $"+(String.format("%,.2f", propertyTax))); //The "%,.2f" formats the number string with commas and two decimal places for readability
+		System.out.println("Property tax due this year: $"+(String.format("%,.2f", propertyTax)));
 		System.out.print("Would you like to calculate another tax value? (y/n): ");	
 		return (validateUserInput('c') == 1); //return the user's option to run again or not
 	}
