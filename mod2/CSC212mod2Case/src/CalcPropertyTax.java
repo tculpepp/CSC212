@@ -19,10 +19,6 @@
 import java.util.Scanner;
 
 public class CalcPropertyTax {
-	//initialize the class variables
-	static float houseValue;
-	static float taxRate;
-	static float propertyTax;
 
 	static Scanner sc = new Scanner(System.in);
 	
@@ -35,10 +31,10 @@ public class CalcPropertyTax {
 	
 	private static boolean userInteraction() {
 		System.out.print("Enter the deisred home value: $");
-		houseValue = validateUserInputFloat(); //call the method to capture and validate the entry then assign it
+		float houseValue = validateUserInputFloat(); //call the method to capture and validate the entry then assign it
 		System.out.print("Enter the current property tax rate percentage (%): "); 
-		taxRate = (validateUserInputFloat()/100); //validate the input then convert the percentage to a decimal
-		propertyTax = houseValue*taxRate;
+		float taxRate = (validateUserInputFloat()/100); //validate the input then convert the percentage to a decimal
+		float propertyTax = houseValue*taxRate;
 		System.out.println("Property tax due this year: $"+(String.format("%,.2f", propertyTax)));
 		System.out.print("\nWould you like to calculate another tax value? (y/n): ");	
 		boolean runAgain = (validateRunAgain(Character.toLowerCase((sc.next().charAt(0))))); //convert the input string to a single char and pass it to validation which will return a boolean
