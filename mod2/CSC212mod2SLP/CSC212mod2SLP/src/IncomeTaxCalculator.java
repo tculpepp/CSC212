@@ -1,12 +1,26 @@
-import java.util.Scanner;
 /**
  * The IncomeTaxCalculator implements an application
  * that collects annual taxable income from the user and uses 
  * it to find the applicable tax rate then calculates the annual 
  * income tax for the income given.
  * @author tculpepp
- *
+ * 
+ * Pseudocode:
+ * -import scanner
+ * -initialize scanner
+ * -initialize TaxBracket class array
+ * -load TaxBracket objects into taxBrackets[]
+ * -start userInteraction loop
+ * -get taxable income (validate input)
+ * -lookup tax rate in taxBrackets
+ * -get tax amount from TaxBracket.getTaxAmount
+ * -print tax rate and amount
+ * -ask user: run again or exit? (validate input)
+ * -start over or end
+ * 
  */
+import java.util.Scanner;
+
 public class IncomeTaxCalculator {
 
 	static Scanner sc = new Scanner(System.in); //load the scanner, we'll need it later
@@ -25,7 +39,7 @@ public class IncomeTaxCalculator {
 		System.out.print("Enter your annual taxable income: $");
 		float taxableIncome = getUserInputFloat(); //call the method to capture and validate the entry then assign it
 		float taxRate = getTaxRate(taxableIncome); //pass the taxableIncome to getTaxRate to return the taxRate
-		float incomeTax = TaxBracket.getTaxAmount(taxableIncome, taxRate); //a little math to calculate the incomeTax value
+		float incomeTax = TaxBracket.getTaxAmount(taxableIncome, taxRate); //get incomeTax from TaxBracket
 		System.out.println("Your tax rate for this income is: "+(taxRate*100)+"%"); //we convert a decimal to a percent to make it more readable
 		System.out.println("Income tax due this year: $"+(String.format("%,.2f", incomeTax))); //format for readability ("%,.2f" inserts commas & 2 decimal places)
 		System.out.print("Would you like to calculate another tax value? (y/n): ");	
@@ -45,15 +59,20 @@ public class IncomeTaxCalculator {
 	
 	//a method to get and validate the input and convert to a boolean
 	private static boolean getRunAgain() {
-		char runAgain = Character.toLowerCase((sc.next().charAt(0)));
+		char runAgain = getScannerChar();
 		while (runAgain !='y' && runAgain !='n') { //check to see if anything other than y or n was entered
 			System.out.print("Please enter y or n: ");
-			runAgain = Character.toLowerCase((sc.next().charAt(0))); //update the variable and check again
+			runAgain = getScannerChar(); //update the variable and check again
 		}
 		return runAgain == 'y' ? true : false; //now that we are clean, return the appropriate boolean
 	}
 	
-	//a method to load all our tax brackets into an array. See TaxBrackets class for details
+	//a method to convert scanner string to a single lower case char
+	private static char getScannerChar() {
+		return Character.toLowerCase((sc.next().charAt(0)));
+	}
+	
+	//a method to load all the needed TaxBracket objects into an array taxBrackets. See TaxBrackets class for details
 	private static TaxBracket[] buildTaxBracketArray() {
 		taxBrackets[0] = new TaxBracket(0, 8500, 0.10f); //0–$8,500: 10%
 		taxBrackets[1] = new TaxBracket(8500, 34500, 0.15f); //$8,500–$34,500: 15%
@@ -89,20 +108,19 @@ class TaxBracket {
 	int high = 0; //high limit of the tax bracket
 	float rate = 0.0f; //tax rate as a decimal
 
-	public TaxBracket (int low, int high, float rate) {
+	protected TaxBracket (int low, int high, float rate) {
 		this.low = low;
 		this.high = high;
 		this.rate = rate;
 	}
 	
-	public TaxBracket (int low, float rate) {
+	protected TaxBracket (int low, float rate) {
 		this.low = low;
 		this.rate = rate;
 	}
 	
 	//a method to calculate the amount of taxes due
 	public static float getTaxAmount (float taxableIncome, float taxRate) {
-		float taxAmount = taxableIncome * taxRate;
-		return taxAmount;
+		return taxableIncome * taxRate;
 	}
 }

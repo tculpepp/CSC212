@@ -5,22 +5,20 @@
  * @author Tom Culpepper
  * 
  * Pseudocode:
- * -import the scanner from util
- * -set while loop in main to loop through userInteraction method
- * -userInteraction method outputs strings and captures inputs using scanner.  (All inputs passed to validating methods then assigned to variables.)
- *  requests ask for homeValue and taxRate then assign propertyTax to be homeValue * taxRate.
- * -homeValue and taxRate are validated with validateUserInputFloat method to ensure only numbers are entered
+ * -import scanner
+ * -start userInteraction loop
+ * -request and get hoseValue and taxRate (validate inputs)
+ * -use getPropertytax method to get propertyTax (houseValue * taxRate)
  * -print propertyTax
- * -ask the user if they want to do another
- * -validate the Y or N with validateRunAgain which returns it as a boolean
- * -userInteraction does some interface housekeeping then returns the runAgain boolean to main
- * -loop through again or say goodbye and exit depending on user boolean
+ * -ask user: run again or exit? (validate input)
+ * -start over or end
+ * 
  */
 import java.util.Scanner;
 
 public class CalcPropertyTax {
 
-	static Scanner sc = new Scanner(System.in);
+	static Scanner sc = new Scanner(System.in); //load the scanner
 	
 	public static void main(String[] args) {
 		boolean run; //boolean to either run again or exit the loop.  true=run again / false=exit
@@ -29,32 +27,46 @@ public class CalcPropertyTax {
 		}while (run);
 	}//end main method
 	
+	//a method to interact with the user.  All strings that are not data validation are here.
 	private static boolean userInteraction() {
 		System.out.print("Enter the deisred home value: $");
-		float houseValue = validateUserInputFloat(); //call the method to capture and validate the entry then assign it
+		float houseValue = getUserInputFloat(); //call the method to capture and validate the entry then assign it
 		System.out.print("Enter the current property tax rate percentage (%): "); 
-		float taxRate = (validateUserInputFloat()/100); //validate the input then convert the percentage to a decimal
-		float propertyTax = houseValue*taxRate;
-		System.out.println("Property tax due this year: $"+(String.format("%,.2f", propertyTax)));
-		System.out.print("\nWould you like to calculate another tax value? (y/n): ");	
-		boolean runAgain = (validateRunAgain(Character.toLowerCase((sc.next().charAt(0))))); //convert the input string to a single char and pass it to validation which will return a boolean
+		float taxRate = (getUserInputFloat()/100); //validate the input then convert the percentage to a decimal
+		float propertyTax = getPropertyTax(houseValue, taxRate);
+		System.out.println("Property tax due this year: $"+(String.format("%,.2f", propertyTax)));//format for readability ("%,.2f" inserts commas & 2 decimal places)
+		System.out.print("Would you like to calculate another tax value? (y/n): ");	
+		boolean runAgain = getRunAgain(); //get the user's input to go again or exit
 		System.out.print(runAgain ? "\n" : "*** Program Closed ***"); //either skip a line before starting over or let the user know we exited
 		return runAgain;//return the user's selection 
-	} //end userInteraction method
+	}
 	
-	private static float validateUserInputFloat() {
+	//a method to get and validate user input is a float
+	private static float getUserInputFloat() {
 		while (!sc.hasNextFloat()) { //check to see if anything other than a float was entered
 			System.out.print("Please enter just a number: ");
 			sc.next();
 		}
 		return sc.nextFloat(); //return the validated number to the calling method
-	} //end validateUserInputFloat method
+	}
 	
-	private static boolean validateRunAgain(char runAgainChar) {
-		while (runAgainChar !='y' && runAgainChar !='n') { //check to see if anything other than y or n was entered
+	//a method to get and validate the input and convert to a boolean
+	private static boolean getRunAgain() {
+		char runAgain = getScannerChar();
+		while (runAgain !='y' && runAgain !='n') { //check to see if anything other than y or n was entered
 			System.out.print("Please enter y or n: ");
-			runAgainChar = Character.toLowerCase((sc.next().charAt(0))); //update the variable and check again
+			runAgain = getScannerChar(); //update the variable and check again
 		}
-		return runAgainChar == 'y' ? true : false; //now that we are clean, return the appropriate boolean
-	} //end validateRunAgain method
+		return runAgain == 'y' ? true : false; //now that we are clean, return the appropriate boolean
+	}
+	
+	//a method to convert scanner string to a single lower case char
+	private static char getScannerChar() {
+		return Character.toLowerCase((sc.next().charAt(0)));
+	}
+	
+	//a method to calculate and return the property tax amount
+	private static float getPropertyTax(float houseValue, float taxRate) {
+		return houseValue * taxRate;
+	}
 }
