@@ -1,5 +1,4 @@
 import java.util.Scanner;
-
 /**
  * The IncomeTaxCalculator implements an application
  * that collects annual taxable income from the user and uses 
@@ -18,7 +17,7 @@ public class IncomeTaxCalculator {
 		do {
 			run = userInteraction();	
 		}while (run);
-	}//end main method
+	}
 	
 	private static boolean userInteraction() {
 		System.out.print("Enter your annual taxable income: $");
@@ -31,7 +30,7 @@ public class IncomeTaxCalculator {
 		boolean runAgain = (validateRunAgain(Character.toLowerCase((sc.next().charAt(0))))); //convert the input string to a single char and pass it to validation which will return a boolean
 		System.out.print(runAgain ? "\n" : "*** Program Closed ***"); //either skip a line before starting over or let the user know we exited
 		return runAgain;//return the user's selection 
-	} //end userInteraction method
+	}
 	
 	private static float validateUserInputFloat() {
 		while (!sc.hasNextFloat()) { //check to see if anything other than a float was entered
@@ -39,7 +38,7 @@ public class IncomeTaxCalculator {
 			sc.next();
 		}
 		return sc.nextFloat(); //return the validated number to the calling method
-	} //end validateUserInputFloat method
+	}
 	
 	private static boolean validateRunAgain(char runAgainChar) {
 		while (runAgainChar !='y' && runAgainChar !='n') { //check to see if anything other than y or n was entered
@@ -47,7 +46,7 @@ public class IncomeTaxCalculator {
 			runAgainChar = Character.toLowerCase((sc.next().charAt(0))); //update the variable and check again
 		}
 		return runAgainChar == 'y' ? true : false; //now that we are clean, return the appropriate boolean
-	} //end validateRunAgain method
+	}
 	
 	private static float taxRateSearch(float taxableIncome) {
 		//initialize an array of TaxBracket objects  for each bracket given.  For the final bracket (everything > X) input 0 for the high limit.  See TaxBracket class for details
@@ -68,9 +67,15 @@ public class IncomeTaxCalculator {
 			}
 		}
 		return rate;
-	} //end taxRateSearch method
-} //end IncomeTaxCalculator class
-
+	}
+}
+/**
+ * The TaxBracket class is use to create TaxBracket objects based on the needs 
+ * of the assignment. 
+ * constructor example: TaxBracket(1000, 12000, 0.10)
+ * @author tculpepp
+ * 
+ */
 class TaxBracket {
 	int low; //low limit of the tax bracket
 	int high; //high limit of the tax bracket
@@ -81,4 +86,4 @@ class TaxBracket {
 		this.high = high;
 		this.rate = rate;
 	}
-}//end TaxBracket class
+}
