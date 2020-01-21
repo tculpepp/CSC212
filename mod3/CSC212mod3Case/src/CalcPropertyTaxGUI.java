@@ -61,7 +61,9 @@ public class CalcPropertyTaxGUI extends Application {
 	    topInputPanel.setPrefColumns(2);
 	    TilePane bottomInputPanel = new TilePane(3,3,enterButton,clearButton);
 	    bottomInputPanel.setPrefColumns(2);
-	       TilePane root = new TilePane(3, 3, message, topInputPanel, bottomInputPanel);
+	    TilePane wayBottomInputPanel = new TilePane (3,3,propertyTaxLabel);
+	    bottomInputPanel.setPrefColumns(1);
+	       TilePane root = new TilePane(3, 3, message, topInputPanel, bottomInputPanel, wayBottomInputPanel);
 	       root.setPrefColumns(1);
 	       root.setStyle("-fx-border-color:black; " + 
 	                           "-fx-border-width:3; -fx-background-color:black");
@@ -69,7 +71,7 @@ public class CalcPropertyTaxGUI extends Application {
 	    Scene scene = new Scene(root);
 	    stage.setScene(scene);
 	    stage.setTitle("Property Tax Calculator");
-	    stage.setResizable(false);
+	    //stage.setResizable(false);
 	    stage.show();
 	}
 	
@@ -91,10 +93,9 @@ public class CalcPropertyTaxGUI extends Application {
      * This method is called when the user clicks the Clear button.
      */
     private void doClear() {
-        //stats = new StatCalc();
         houseValueInput.setText("");
         taxRateInput.setText("");
-        showData();
+        showData(0);
     }
     
     /**
@@ -103,52 +104,58 @@ public class CalcPropertyTaxGUI extends Application {
      * four display labels.  It is possible that an error will occur,
      * in which case an error message is put into the label at the top
      * of the window.  (Because the Enter button has been set to be the
-     * default button for the program, this mehod is also invoked when
+     * default button for the program, this method is also invoked when
      * the user presses return.)
      */
     private void doEnter() {
-        float houseValue;  //input house value
-        float taxRate; //input tax rate
-        try {
-            houseValue = Float.parseFloat(houseValueInput.getText());
-        }
-        catch (NumberFormatException e) {
-                // The user's entry is not a legal number.  
-                // Put an error message in the message label 
-                // and return without entering a number.
-            message.setText("\"" + houseValueInput.getText() + "\" is not a legal number.");
-            houseValueInput.selectAll();
-            houseValueInput.requestFocus();
-            return;
-        }
-        try {
-            taxRate = Float.parseFloat(taxRateInput.getText());
-        }
-        catch (NumberFormatException e) {
-                // The user's entry is not a legal number.  
-                // Put an error message in the message label 
-                // and return without entering a number.
-            message.setText("\"" + taxRateInput.getText() + "\" is not a legal number.");
-            taxRateInput.selectAll();
-            taxRateInput.requestFocus();
-            return;
-        }
-        //stats.enter(num);
-        showData();
-    } 
+        float houseValue = validFloatInput(houseValueInput.getText(), 'h');
+        float taxRate = (validFloatInput(taxRateInput.getText(), 't'))/100;
+        showData(calcPropertyTax(houseValue, taxRate));
+      }
+        
     /**
      *  Show the data from the StatCalc in the four output labels.
      */
-    private void showData() {
-        propertyTaxLabel.setText(" Property tax Due:  A LOT!!");
+    private void showData(float propertyTax) {
+        propertyTaxLabel.setText("Property tax due this year: $"+(String.format("%,.2f", propertyTax)));
         /* Set the message label back to its normal text, in case it has
           been showing an error message.  For the user's convenience,
           select the text in the TextField and give the input focus
           to the text field.  That way the user can just start typing
           the next number. */
         message.setText("Enter house value and tax rate, then press return");
-        houseValueInput.selectAll();
-        houseValueInput.requestFocus();
+        taxRateInput.selectAll();
+        taxRateInput.requestFocus();
     }
 
-}  // end StatsCalcGUI
+    private float calcPropertyTax(float houseValue, float taxRate) {
+    	return houseValue * taxRate;
+    }
+    
+  //a method to get and validate user input is a float
+  	private float validFloatInput(String userInput, char type) {
+  		float validInput = 0f;
+  		boolean b;
+  		do {
+  		    try {
+  		        validInput = Float.parseFloat(userInput);
+  		        b = false;                           // <- if ok, set false
+  		    } catch(NumberFormatException e){
+  		    	b = true; // <- if catch block is entered, set true
+  		    	message.setText("\"" + userInput + "\" is not a legal number.");
+  		    	if (type=='h') {
+  		    		houseValueInput.selectAll();
+  		    		houseValueInput.requestFocus();
+  		    	}
+  		    	else if (type=='t') {
+  		    		taxRateInput.selectAll();
+  		    		taxRateInput.requestFocus();
+  		    	}
+  		        
+  		    }
+  		} while (b);
+  		return validInput;
+  	}
+  		
+
+}  // end CalcPropertyTaxGUI
