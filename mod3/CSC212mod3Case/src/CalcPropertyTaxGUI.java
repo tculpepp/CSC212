@@ -5,6 +5,7 @@
  */
 
 import javafx.application.Application;
+import javafx.geometry.Pos;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.layout.TilePane;
@@ -13,6 +14,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 
 public class CalcPropertyTaxGUI extends Application {
 	
@@ -38,40 +40,49 @@ public class CalcPropertyTaxGUI extends Application {
 	
 	public void start(Stage stage) {
 		houseValueInput = new TextField();
-		//houseValueInput.setPrefColumnCount(8);  // Makes the text box smaller than the default.
-		
+			houseValueInput.setPrefColumnCount(10);
+			houseValueInput.setAlignment(Pos.CENTER);
+			houseValueInput.setPromptText("Assessed Value"); //to set the hint text
+			//houseValueInput.getParent().requestFocus(); //to not setting the focus on that node so that the hint will display immediately
 		taxRateInput = new TextField();
-		
+			taxRateInput.setPrefColumnCount(10);
+			taxRateInput.setAlignment(Pos.CENTER);
+			taxRateInput.setPromptText("Tax Rate"); //to set the hint text
+			//taxRateInput.getParent().requestFocus(); //to not setting the focus on that node so that the hint will display immediately
 		
 		enterButton = new Button("Enter");
-		enterButton.setOnAction( e -> doEnter() );
-		//enterButton.setMaxSize(1000,1000);
-		enterButton.setDefaultButton(true); // Pressing return will be equivalent to clicking this button.
+			enterButton.setOnAction( e -> doEnter() );
+			enterButton.setMaxSize(1000,1000);
+			enterButton.setFocusTraversable(false); //eliminate the button from 'tab' access
+			enterButton.setDefaultButton(true); // Pressing return will be equivalent to clicking this button.
 		clearButton = new Button("Clear");
-	    clearButton.setOnAction( e -> doClear() );
-	    //clearButton.setMaxSize(1000,1000);
+	    	clearButton.setOnAction( e -> doClear() );
+	    	clearButton.setMaxSize(1000,1000);
+	    	enterButton.setFocusTraversable(false);//eliminate the button from 'tab' access
 	    
-	    propertyTaxLabel =   makeLabel(" Property Tax due($): ");
+	    propertyTaxLabel = makeLabel("Property tax due this year:\r");
 	    
 	    message = new Label("Enter house value and tax rate, then press return");
-	    message.setFont(Font.font(16));
-	    message.setTextFill(Color.WHITE);
-	    
-	    TilePane topInputPanel = new TilePane(3,3,houseValueInput,taxRateInput);
-	    topInputPanel.setPrefColumns(2);
-	    TilePane bottomInputPanel = new TilePane(3,3,enterButton,clearButton);
-	    bottomInputPanel.setPrefColumns(2);
-	    TilePane wayBottomInputPanel = new TilePane (3,3,propertyTaxLabel);
-	    bottomInputPanel.setPrefColumns(1);
-	       TilePane root = new TilePane(3, 3, message, topInputPanel, bottomInputPanel, wayBottomInputPanel);
-	       root.setPrefColumns(1);
-	       root.setStyle("-fx-border-color:black; " + 
-	                           "-fx-border-width:3; -fx-background-color:black");
+	    	message.setFont(Font.font(16));
+	    	message.setTextFill(Color.WHITE);
+	    	message.setWrapText(true);
+	    	message.setAlignment(Pos.CENTER);
+	       
+	    TilePane topPanel = new TilePane(5,5,houseValueInput, enterButton, taxRateInput, clearButton);
+	    	topPanel.setPrefColumns(2);
+	    	topPanel.setPrefRows(2);
+	    	topPanel.setAlignment(Pos.CENTER);
+	    TilePane bottomPanel = new TilePane(5,5,propertyTaxLabel);
+	    	bottomPanel.setPrefColumns(1);
+	    TilePane root = new TilePane(3,3,message, topPanel, propertyTaxLabel);
+	    	root.setPrefColumns(1);
+	    	root.setStyle("-fx-border-color:black; " + 
+                    "-fx-border-width:3; -fx-background-color:black");
 	    
 	    Scene scene = new Scene(root);
 	    stage.setScene(scene);
 	    stage.setTitle("Property Tax Calculator");
-	    //stage.setResizable(false);
+	    stage.setResizable(false);
 	    stage.show();
 	}
 	
@@ -83,8 +94,11 @@ public class CalcPropertyTaxGUI extends Application {
 	private Label makeLabel(String text) {
 	       Label label = new Label(text);
 	       label.setMaxSize(1000,1000);
-	       label.setStyle("-fx-background-color:white; " +
-	                              "-fx-font-family: monospace; -fx-font-weight: bold");
+	       label.setTextFill(Color.WHITE);
+	       label.setAlignment(Pos.CENTER);
+	       label.setTextAlignment(TextAlignment.CENTER);
+	       label.setStyle("-fx-background-color: black; " +
+	                              "-fx-font-family: monospace; -fx-font-weight: bold; -fx-font-size: 16;");
 	       return label;
 	    }
 	
@@ -93,69 +107,63 @@ public class CalcPropertyTaxGUI extends Application {
      * This method is called when the user clicks the Clear button.
      */
     private void doClear() {
-        houseValueInput.setText("");
-        taxRateInput.setText("");
+    	taxRateInput.setText("");
+    	houseValueInput.setText("");
         showData(0);
     }
     
-    /**
-     * Respond when the clicks the Enter button by getting a number from
-     * the text input box, adding it to the StatCalc and updating the
-     * four display labels.  It is possible that an error will occur,
-     * in which case an error message is put into the label at the top
-     * of the window.  (Because the Enter button has been set to be the
-     * default button for the program, this method is also invoked when
-     * the user presses return.)
-     */
     private void doEnter() {
-        float houseValue = validFloatInput(houseValueInput.getText(), 'h');
-        float taxRate = (validFloatInput(taxRateInput.getText(), 't'))/100;
+        float houseValue;
+	    float taxRate;
+	    if (validateInput(houseValueInput.getText(),(byte)0)) {
+	    	houseValue = Float.parseFloat(houseValueInput.getText());
+	    }
+	    else {
+		    return;
+	    }
+	    if (validateInput(taxRateInput.getText(),(byte)1)) {
+	    	taxRate = Float.parseFloat(taxRateInput.getText());
+	    }
+	    else {
+		    return;
+	    }
         showData(calcPropertyTax(houseValue, taxRate));
       }
+    
+    
+    private boolean validateInput(String userInput, byte type) {
+    	try {
+		        Float.parseFloat(userInput);
+		        return true;
+		    }  
+	    catch(NumberFormatException e){
+		    	message.setText("\"" + userInput + "\" is not a legal number.");
+		    	if (type == 0) {
+		    		houseValueInput.selectAll();
+			    	houseValueInput.requestFocus();
+		    	}
+		    	else if (type==1) {
+		    		taxRateInput.selectAll();
+		    		taxRateInput.requestFocus();
+		    	}
+		    	return false;
+		    }
+    }
         
-    /**
-     *  Show the data from the StatCalc in the four output labels.
-     */
+
     private void showData(float propertyTax) {
-        propertyTaxLabel.setText("Property tax due this year: $"+(String.format("%,.2f", propertyTax)));
-        /* Set the message label back to its normal text, in case it has
-          been showing an error message.  For the user's convenience,
-          select the text in the TextField and give the input focus
-          to the text field.  That way the user can just start typing
-          the next number. */
+    	if (propertyTax != 0) {
+    		propertyTaxLabel.setText("Property tax due this year:\r $"+(String.format("%,.2f", propertyTax)));
+    	}
+    	else {
+    		propertyTaxLabel.setText("Property tax due this year:\r");
+    	}
         message.setText("Enter house value and tax rate, then press return");
-        taxRateInput.selectAll();
-        taxRateInput.requestFocus();
+        houseValueInput.requestFocus();
     }
 
     private float calcPropertyTax(float houseValue, float taxRate) {
-    	return houseValue * taxRate;
+    	return houseValue * (taxRate/100);
     }
-    
-  //a method to get and validate user input is a float
-  	private float validFloatInput(String userInput, char type) {
-  		float validInput = 0f;
-  		boolean b;
-  		do {
-  		    try {
-  		        validInput = Float.parseFloat(userInput);
-  		        b = false;                           // <- if ok, set false
-  		    } catch(NumberFormatException e){
-  		    	b = true; // <- if catch block is entered, set true
-  		    	message.setText("\"" + userInput + "\" is not a legal number.");
-  		    	if (type=='h') {
-  		    		houseValueInput.selectAll();
-  		    		houseValueInput.requestFocus();
-  		    	}
-  		    	else if (type=='t') {
-  		    		taxRateInput.selectAll();
-  		    		taxRateInput.requestFocus();
-  		    	}
-  		        
-  		    }
-  		} while (b);
-  		return validInput;
-  	}
-  		
-
+  
 }  // end CalcPropertyTaxGUI
