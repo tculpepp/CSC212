@@ -1,9 +1,8 @@
 /**
- * In this assignment, rewrite this program (mod1 SLP) using the GUI feature to accept user input. Users will press "E" to stop the program.  
+ * CalcPropertyTaxGui is a simple program to take user
+ * inputs and calculate a property tax amount.
  * @author tculpepp
- *
  */
-
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.geometry.Insets;
@@ -69,18 +68,29 @@ public class CalcPropertyTaxGUI extends Application {
     private void doEnter() {
         float houseValue;
 	    float taxRate;
+	    propertyTaxLabel.setText("");
+	    /**
 	    if (validateInput(houseValueInput.getText(),(byte)0)) {
 	    	houseValue = Float.parseFloat(houseValueInput.getText());
 	    }
 	    else {
 		   return;
+	    }*/
+	    while (!validateInput(houseValueInput.getText(),(byte)0)) {
+	    	return;
 	    }
+	    houseValue = Float.parseFloat(houseValueInput.getText());
+	    /**
 	    if (validateInput(taxRateInput.getText(),(byte)1)) {
 	    	taxRate = Float.parseFloat(taxRateInput.getText());
 	    }
 	    else {
 		   return;
+	    } */
+	    while (!validateInput(taxRateInput.getText(),(byte)0)) {
+	    	return;
 	    }
+	    taxRate = Float.parseFloat(taxRateInput.getText());
 	    float taxAmount = houseValue * (taxRate/100);
 	    if (taxAmount >= 0) {
     		propertyTaxLabel.setText("Property Tax: $"+(String.format("%,.2f", taxAmount)));
