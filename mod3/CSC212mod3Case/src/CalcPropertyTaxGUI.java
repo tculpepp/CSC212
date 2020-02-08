@@ -17,7 +17,11 @@ import javafx.scene.input.KeyEvent;
 public class CalcPropertyTaxGUI extends Application {
 	
 	private TextField houseValueInput, taxRateInput;  // input boxes
-	private Label instLabel, messageLabel; //labels to interact with
+	private Label messageLabel; //labels to interact with
+	
+	public static void main(String[] args) {
+		launch(args);
+	}
 	
 	public void start(Stage stage) {
 		houseValueInput = new TextField(); //input for house value
@@ -26,7 +30,7 @@ public class CalcPropertyTaxGUI extends Application {
 		taxRateInput = new TextField(); //input for tax rate
 		taxRateInput.setMaxWidth(100);
 		
-		instLabel = new Label("Enter house value and tax rate to\r"
+		Label instLabel = new Label("Enter house value and tax rate to\r"
 				+ "calculate a property tax amount."); //instructions to the user
 		
 		messageLabel = new Label(); //error label in case bad data is entered
@@ -50,7 +54,6 @@ public class CalcPropertyTaxGUI extends Application {
 		root.setStyle("-fx-padding:10px; -fx-border-width:2px; -fx-vgap:5px;");
 		GridPane.setHalignment(enterButton, HPos.CENTER);
 		GridPane.setHalignment(messageLabel, HPos.CENTER);
-		//GridPane.setHalignment(errorLabel, HPos.CENTER);
 		
 		Scene scene = new Scene(root);
     	scene.addEventFilter(KeyEvent.KEY_PRESSED, (KeyEvent e) -> { //event filter to catch an E to exit
@@ -61,9 +64,6 @@ public class CalcPropertyTaxGUI extends Application {
 	    stage.setScene(scene);
 	    stage.setTitle("Property Tax Calculator");
 	    stage.show();
-	}
-	public static void main(String[] args) {
-		launch(args);
 	}
 	private void doEnter() {
 	    messageLabel.setVisible(false);
