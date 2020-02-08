@@ -48,6 +48,7 @@ public class MultiPropTaxGUI extends Application {
 		root.add(messageLabel, 0, 6, 2, 1);
 		root.add(nextButton, 0, 4);
 		root.add(enterButton, 0, 5);
+		root.add(exitLabel, 0, 7);
 		root.setStyle("-fx-padding:10px; -fx-border-width:2px; -fx-vgap:5px;");
 		nextButton.setOnAction(e -> {
 			int numHouses = Integer.parseInt(numHousesInput.getText()); //get the number of houses and set it to variable
