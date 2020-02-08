@@ -19,9 +19,6 @@ public class CalcPropertyTaxGUI extends Application {
 	private TextField houseValueInput, taxRateInput;  // input boxes
 	private Label message, propertyTaxLabel, errorLabel; //labels to interact with
 	
-	public static void main(String[] args) {
-		launch(args);
-	}
 	public void start(Stage stage) {
 		houseValueInput = new TextField(); //input for house value
 		houseValueInput.setMaxWidth(100);
@@ -69,28 +66,30 @@ public class CalcPropertyTaxGUI extends Application {
 	    stage.setTitle("Property Tax Calculator");
 	    stage.show();
 	}
+	public static void main(String[] args) {
+		launch(args);
+	}
 	private void doEnter() {
 	    propertyTaxLabel.setText(""); //clear out the label so it doesn't show in error if we calc again
 	    errorLabel.setVisible(false);
-	    float houseValue = (validateInput(houseValueInput) ? Float.parseFloat(houseValueInput.getText()) : 0);
-	    float taxRate = (validateInput(taxRateInput) ? Float.parseFloat(taxRateInput.getText()) : 0);
+	    float houseValue = validateInput(houseValueInput);
+	    float taxRate = validateInput(taxRateInput);
 	    if (houseValue != 0 && taxRate != 0) { //see if both variables are set before calculating
 	    	float taxAmount = houseValue * (taxRate/100); //calc the tax amount
-	    	System.out.println(taxAmount);
 	    	propertyTaxLabel.setText("Property Tax: $"+(String.format("%,.2f", taxAmount)));
 	    }	
 	}
 	//a method to check the input and return true if valid or false if invalid
-    private boolean validateInput(TextField userInput) {
+    private float validateInput(TextField userInput) {
     	try {
-	    	Float.parseFloat(userInput.getText()); //try to parse the user input as a float
+	    	float validResult = Float.parseFloat(userInput.getText()); //try to parse the user input as a float
 	    	userInput.setStyle("-fx-border-color: black"); //make sure the text field isn't still highlighted
-	    	return true;
+	    	return validResult;
 	    }	catch (NumberFormatException e){
 	    	errorLabel.setText("\"" + userInput.getText() + "\" is not a valid entry."); //set the errorLabel text
 	    	errorLabel.setVisible(true); 												//and make it visible
 	    	userInput.setStyle("-fx-border-color: red"); //highlight the error box in red
-	    	return false;
+	    	return 0;
 	    }
     }
 }
