@@ -82,7 +82,7 @@ public class CalcPropertyTaxGUI extends Application {
 	//a method to check the input and return true if valid or false if invalid
     private float validateInput(TextField userInput) {
     	try {
-	    	float validResult = Float.parseFloat(userInput.getText()); //try to parse the user input as a float
+	    	float validResult = Float.parseFloat(userInput.getText()); //try to parse the user input as a float.
 	    	userInput.setStyle("-fx-border-color: black"); //make sure the text field isn't still highlighted
 	    	return validResult;
 	    }	catch (NumberFormatException e){
