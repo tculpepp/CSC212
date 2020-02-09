@@ -1,5 +1,4 @@
 /**
- /**
  * MultiPropTaxGui is a simple program to take user inputs
  * & and calculate a property tax amount for multiple houses.
  * @author tculpepp
@@ -27,27 +26,22 @@ public class MultiPropTaxGUI extends Application {
 	public static void main(String[] args) {
 		launch(args);
 	}
-	
 	public void start(Stage stage) {
 		numHousesInput = new TextField();
 		numHousesInput.setMaxWidth(50);
 		taxRateInput = new TextField(); //input for tax rate
 		taxRateInput.setMaxWidth(100);
-		
 		messageLabel = new Label(); //error label in case bad data is entered
 		Label exitLabel = new Label("(press 'E' to exit)"); //instructions on how to exit
-		
 		enterButton = new Button("Calculate"); //setup the enter button
 		enterButton.setOnAction(e -> doEnter());
 		enterButton.setVisible(false); 
-		
 		nextButton = new Button("Next");
 		nextButton.setDefaultButton(true);
 		nextButton.setOnAction(e -> { 
 			buildForm();
 			stage.sizeToScene(); //ensure the stage re-sizes
 		});
-		
 		centerFlow = new FlowPane();
 		centerFlow.setPrefWrapLength(150); // preferred height = 150
 		centerFlow.setOrientation(Orientation.VERTICAL);
