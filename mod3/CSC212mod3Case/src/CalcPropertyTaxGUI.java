@@ -34,7 +34,6 @@ public class CalcPropertyTaxGUI extends Application {
 				+ "calculate a property tax amount."); //instructions to the user
 		
 		messageLabel = new Label(); //error label in case bad data is entered
-		messageLabel.setVisible(false); //hide it until needed
 		
 		Label exitLabel = new Label("Press 'E' to exit"); //instructions on how to exit
 		
@@ -66,7 +65,6 @@ public class CalcPropertyTaxGUI extends Application {
 	    stage.show();
 	}
 	private void doEnter() {
-	    messageLabel.setVisible(false);
 	    float houseValue = validateInput(houseValueInput);
 	    float taxRate = validateInput(taxRateInput);
 	    while (houseValue == 0 || taxRate == 0) { //see if both variables are set before calculating
@@ -74,7 +72,6 @@ public class CalcPropertyTaxGUI extends Application {
 	    }
 	    float taxAmount = houseValue * (taxRate/100); //calc the tax amount
 		messageLabel.setStyle("-fx-text-fill: black");
-		messageLabel.setVisible(true);
 		messageLabel.setText("Property Tax: $"+(String.format("%,.2f", taxAmount)));
 	}
 	//a method to check the input and return the parsed value or 0 if failed parse
@@ -85,8 +82,7 @@ public class CalcPropertyTaxGUI extends Application {
 	    	return validResult;
 	    }	catch (NumberFormatException e){
 	    	messageLabel.setText("Invalid entry, please try again."); //set the errorLabel text
-	    	messageLabel.setStyle("-fx-text-fill: red");
-	    	messageLabel.setVisible(true); 							//and make it visible
+	    	messageLabel.setStyle("-fx-text-fill: red");						//and make it visible
 	    	userInput.setStyle("-fx-border-color: red"); //highlight the error box in red
 	    	return 0;
 	    }
