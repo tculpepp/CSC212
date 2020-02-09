@@ -20,7 +20,9 @@ import javafx.scene.input.KeyEvent;
 public class MultiPropTaxGUI extends Application {
 	
 	private TextField numHousesInput, taxRateInput, houseValues[];  // input boxes
-	private Label messageLabel; //labels to interact with
+	private Label messageLabel, instLabel; //labels to interact with
+	private FlowPane centerFlow;
+	private Button nextButton, enterButton; 
 	
 	public static void main(String[] args) {
 		launch(args);
@@ -31,59 +33,42 @@ public class MultiPropTaxGUI extends Application {
 		numHousesInput.setMaxWidth(50);
 		taxRateInput = new TextField(); //input for tax rate
 		taxRateInput.setMaxWidth(100);
-		Label instLabel = new Label("Enter the number of houses and the tax rate below");
+		
+		instLabel = new Label("Multi-Home\rProperty Tax Calculator");
+		instLabel.setStyle("-fx-text-alignment:center;  -fx-font-weight:bolder; -fx-font-size:20;");
 		messageLabel = new Label(); //error label in case bad data is entered
 		messageLabel.setVisible(false); //hide it until needed
 		Label exitLabel = new Label("(press 'E' to exit)"); //instructions on how to exit
-		Button enterButton = new Button("Enter"); //setup the enter button
+		
+		enterButton = new Button("Calculate"); //setup the enter button
 		enterButton.setOnAction(e -> doEnter());
-		enterButton.setVisible(false); 	
-		Button nextButton = new Button("Next");
+		enterButton.setVisible(false); 
+		
+		nextButton = new Button("Next");
 		nextButton.setDefaultButton(true);
-		
-		FlowPane centerFlow = new FlowPane();
-		centerFlow.setPrefWrapLength(200); // preferred height = 200
-		centerFlow.setOrientation(Orientation.VERTICAL);
-		centerFlow.setStyle("-fx-alignment: center; -fx-padding:10px;");
-		
-		VBox bottomVBox = new VBox(messageLabel, exitLabel);
-		bottomVBox.setStyle("-fx-alignment: center; -fx-padding:10px;");
-		
-		VBox leftVBox = new VBox(new Label("Number of Houses:"),numHousesInput,new Label("Tax Rate (%): "),taxRateInput,nextButton,enterButton);
-		leftVBox.setStyle("-fx-alignment: center; -fx-padding:10px;");
-
-		nextButton.setOnAction(e -> { //validate and use the number of houses entered to build the entry boxes
-			try {
-				int numHouses = Integer.parseInt(numHousesInput.getText()); //get the number of houses and set it to variable
-				centerFlow.getChildren().add(new Label("House Values:"));
-				numHousesInput.setStyle("-fx-border-color: black");
-				messageLabel.setVisible(false);
-				houseValues = new TextField[numHouses]; //initialize the array houseValues[]
-				for (int i=0; i<numHouses; i++) { //Iterate through and create entry fields for each value
-					TextField houseValue = new TextField();
-		            houseValues[i] = houseValue;
-		            houseValue.setPrefWidth(100); //set the width
-		            centerFlow.getChildren().add(houseValues[i]);
-				}
-				nextButton.setVisible(false); //turn off the next button
-				enterButton.setVisible(true); //turn on the enter button
-				enterButton.setDefaultButton(true); // the enter button is now default
-				instLabel.setText("Enter each house value in the boxes below.");
-				stage.sizeToScene(); //ensure the stage re-sizes
-			} catch (NumberFormatException e2) {
-				messageLabel.setText("Invalid Entry, Please Try Again"); //set the messageLabel text
-		    	messageLabel.setStyle("-fx-text-fill: red");		//color it red
-		    	messageLabel.setVisible(true); 						//and make it visible
-		    	numHousesInput.setStyle("-fx-border-color: red"); 	//highlight the error box in red
-			}
+		nextButton.setOnAction(e -> { 
+			buildForm();
+			stage.sizeToScene(); //ensure the stage re-sizes
 		});
+		
+		centerFlow = new FlowPane();
+		centerFlow.setPrefWrapLength(150); // preferred height = 150
+		centerFlow.setOrientation(Orientation.VERTICAL);
+		
+		VBox topVBox = new VBox(instLabel);
+		topVBox.setStyle("-fx-alignment: center; -fx-padding:10px;");
+		VBox bottomVBox = new VBox(messageLabel, exitLabel);
+		bottomVBox.setStyle("-fx-alignment: center;");
+		VBox leftVBox = new VBox(new Label("Number of Houses:"),numHousesInput,new Label("Tax Rate (%):"),taxRateInput,nextButton,enterButton);
+		leftVBox.setStyle("-fx-padding:10px;");
+		VBox centerVBox = new VBox(new Label("House Values:"), centerFlow);
+		centerVBox.setStyle("-fx-padding:10px;");
 		
 		BorderPane root = new BorderPane();
 		root.setMinWidth(335);
-		root.setStyle("-fx-alignment: center; -fx-padding:10px;");
-		root.setTop(instLabel);
+		root.setTop(topVBox);
 		root.setLeft(leftVBox);
-		root.setCenter(centerFlow);
+		root.setCenter(centerVBox);
 		root.setBottom(bottomVBox);
 		
 		Scene scene = new Scene(root);
@@ -94,6 +79,24 @@ public class MultiPropTaxGUI extends Application {
 	    stage.setTitle("Property Tax Calculator");
 	    stage.show();
 	}
+	private void buildForm() {
+		int numHouses = (int)validateInput(numHousesInput);
+		if (numHouses != 0) {
+			numHousesInput.setStyle("-fx-border-color: black");
+			numHousesInput.setDisable(true);
+			messageLabel.setVisible(false);
+			houseValues = new TextField[numHouses]; //initialize the array houseValues[]
+			for (int i=0; i<numHouses; i++) { //Iterate through and create entry fields for each value
+				TextField houseValue = new TextField();
+	            houseValues[i] = houseValue;
+	            houseValue.setPrefWidth(100); //set the width
+	            centerFlow.getChildren().add(houseValues[i]);
+			}
+			nextButton.setVisible(false); //turn off the next button
+			enterButton.setVisible(true); //turn on the enter button
+			enterButton.setDefaultButton(true); // the enter button is now default
+		}
+	}
 	private void doEnter() {
 		float houseTotal = 0; //holds total house value to be taxed
 		int numValidated = 0; //holds number of validated entries
@@ -102,13 +105,11 @@ public class MultiPropTaxGUI extends Application {
 			if (validateInput(hv)!=0) { //if input validation =
 				houseTotal = Float.parseFloat(hv.getText()) + houseTotal;
 				numValidated++;
-				System.out.println(houseTotal);//***********DELETE THIS***************
 			}
 		}
 		if (numValidated == houseValues.length && taxRate !=0) {
 			float taxAmount = houseTotal * taxRate/100;
-			System.out.println(taxAmount); //*********************************************** don't forget to delete this!
-			messageLabel.setStyle("-fx-text-fill: black");
+			messageLabel.setStyle("-fx-text-fill: black; -fx-font-weight:bolder; -fx-font-size:20;");
 			messageLabel.setVisible(true);
 			messageLabel.setText("Property Tax: $"+(String.format("%,.2f", taxAmount)));
 		}
@@ -121,9 +122,9 @@ public class MultiPropTaxGUI extends Application {
 	    	return validResult;
 	    }	catch (NumberFormatException e){
 	    	messageLabel.setText("Invalid Entry, Please Try Again"); //set the messageLabel text
-	    	messageLabel.setStyle("-fx-text-fill: red");								//color it red
-	    	messageLabel.setVisible(true); 												//and make it visible
-	    	userInput.setStyle("-fx-border-color: red"); 								//highlight the error box in red
+	    	messageLabel.setStyle("-fx-text-fill: red");			//color it red
+	    	messageLabel.setVisible(true); 							//and make it visible
+	    	userInput.setStyle("-fx-border-color: red"); 			//highlight the error box in red
 	    	return 0;
 	    }
     }
