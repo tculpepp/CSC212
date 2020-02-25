@@ -1,3 +1,6 @@
+/**
+ * Implementation of the Selection Sort algorithm.
+ */
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
